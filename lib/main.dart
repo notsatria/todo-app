@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list_app/models/todo_provider.dart';
 
 import 'screens/main_screen.dart';
 
@@ -11,10 +13,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter ToDo List App',
-      home: MainScreen(),
+    return ChangeNotifierProvider(
+      create: (context) => ToDoLists(),
+      builder: (context, child) => const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter ToDo List App',
+        home: MainScreen(),
+      ),
     );
   }
 }

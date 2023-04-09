@@ -1,12 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../models/todo_provider.dart';
 import '../constant/constant.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({Key key}) : super(key: key);
 
   @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  final textInputController = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    textInputController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final todoList = Provider.of<ToDoLists>(context, listen: false);
+
+    final alltodoList = todoList.toDoLists;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -58,7 +78,7 @@ class MainScreen extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: 10,
+                itemCount: alltodoList.length,
                 itemBuilder: (context, index) => Container(
                   width: double.infinity,
                   height: 55,
@@ -67,12 +87,29 @@ class MainScreen extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15)),
                   child: ListTile(
-                    leading: Icon(
-                      Icons.check_box_outline_blank,
-                      size: 24,
-                      color: tdBlue,
+                    onTap: () {
+                      setState(() {
+                        alltodoList[index].isChecked =
+                            !alltodoList[index].isChecked;
+                      });
+                    },
+                    leading: alltodoList[index].isChecked
+                        ? Icon(
+                            Icons.check_box,
+                            size: 24,
+                            color: tdBlue,
+                          )
+                        : Icon(
+                            Icons.check_box_outline_blank,
+                            size: 24,
+                            color: tdBlue,
+                          ),
+                    title: Text(
+                      alltodoList[index].taskDesc,
+                      style: alltodoList[index].isChecked
+                          ? TextStyle(decoration: TextDecoration.lineThrough)
+                          : null,
                     ),
-                    title: Text('Makan'),
                     trailing: Container(
                       width: 35,
                       height: 35,
@@ -81,6 +118,11 @@ class MainScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            todoList.removeToDo(alltodoList[index].id);
+                          });
+                        },
                         icon: Icon(
                           Icons.delete,
                           size: 20,
@@ -113,28 +155,41 @@ class MainScreen extends StatelessWidget {
                                 spreadRadius: 5),
                           ]),
                       child: TextField(
+                        controller: textInputController,
+                        onSubmitted: (value) {
+                          textInputController.clear();
+                        },
                         decoration: InputDecoration(
                             hintText: 'Add a new todo item',
                             border: InputBorder.none),
                       ),
                     ),
-                    Container(
-                      width: 65,
-                      height: 65,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: tdBlue,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 3,
-                                spreadRadius: 3,
-                                offset: Offset(0, 3)),
-                          ]),
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 30,
+                    InkWell(
+                      onTap: () {
+                        // menambahkan list baru
+                        setState(() {
+                          todoList.addNewToDo(textInputController.text);
+                          textInputController.clear();
+                        });
+                      },
+                      child: Container(
+                        width: 65,
+                        height: 65,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: tdBlue,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 3,
+                                  spreadRadius: 3,
+                                  offset: Offset(0, 3)),
+                            ]),
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 30,
+                        ),
                       ),
                     ),
                   ],
