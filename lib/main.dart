@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list_app/models/todo_provider.dart';
 
+import 'providers/todo_provider.dart';
 import 'screens/main_screen.dart';
 
 void main() {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => ToDoLists(),
-      builder: (context, child) => const MaterialApp(
+      builder: (context, child) => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter ToDo List App',
         home: MainScreen(),

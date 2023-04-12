@@ -1,12 +1,12 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-import 'todo.dart';
+import '../models/todo.dart';
 
 class ToDoLists with ChangeNotifier {
   final List<ToDo> _toDoLists = [
     ToDo(
       id: 'id1',
-      taskDesc: 'Menggambar',
+      taskDesc: 'Menyapu',
       isChecked: false,
     ),
     ToDo(
@@ -35,16 +35,20 @@ class ToDoLists with ChangeNotifier {
     return [..._toDoLists];
   }
 
-  void removeToDo(String id) {
-    _toDoLists.removeWhere((element) => element.id == id);
+  void checkPressed(int index) {
+    toDoLists[index].isChecked = !toDoLists[index].isChecked;
     notifyListeners();
   }
 
-  void addNewToDo(String taskDesc) {
-    _toDoLists.add(ToDo(
-      id: DateTime.now().toString(),
-      taskDesc: taskDesc,
-    ));
+  void addToDoList(String taskDesc) {
+    _toDoLists.add(
+      ToDo(id: DateTime.now().toString(), taskDesc: taskDesc),
+    );
+    notifyListeners();
+  }
+
+  void deleteTodo(String id) {
+    _toDoLists.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 }
